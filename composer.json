@@ -1,0 +1,19 @@
+{
+    "name": "explorin/tebot",
+    "description": "Bot for notification log",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Explorin\\Tebot\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Imam Nurhy",
+            "email": "imamnurhy@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}

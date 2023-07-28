@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Http;
  *
  * Example usage:
  *
- * Tebot::alert('Hai')->status(200)->send();
+ * Tebot::alert('Hai')->status(200);
  *
  * @package App\Services\Tebot
  */

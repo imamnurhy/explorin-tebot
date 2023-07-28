@@ -6,7 +6,10 @@
     "autoload": {
         "psr-4": {
             "Explorin\\Tebot\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers/helpers.php"
+        ]
     },
     "authors": [
         {

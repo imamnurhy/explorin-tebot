@@ -19,13 +19,13 @@ composer require explorin/tebot
 Explorin\Tebot\TebotServiceProvider::class,
 ```
 
-4. Tambahkan konfigurasi pada aliases di dalam file `config/app.php`. Buka file tersebut dan tambahkan baris berikut di dalam array `aliases`:
+4. (Laravel) Tambahkan konfigurasi pada aliases di dalam file `config/app.php`. Buka file tersebut dan tambahkan baris berikut di dalam array `aliases`:
 
 ```php
 'Tebot' => \Explorin\Tebot\Facades\TebotFacade::class,
 ```
 
-5. Publish file konfigurasi dengan menjalankan perintah:
+5. (Laravel) Publish file konfigurasi dengan menjalankan perintah:
 ```bash
 php artisan vendor:publish --provider="Explorin\Tebot\TebotServiceProvider::class" --tag=config
 ```

@@ -1,6 +1,6 @@
 # Telegram Bot (Tebot)
 
-Tebog adalah sebuah package Laravel yang berfungsi untuk mengirim notifikasi log dengan mudah
+Tebot adalah sebuah package Laravel yang berfungsi untuk mengirim notifikasi log dengan mudah
 
 ## Instalasi
 
@@ -19,7 +19,7 @@ composer require explorin/tebot
 Explorin\Tebot\TebotServiceProvider::class,
 ```
 
-4. Tambahkan konfigurasi pada aliases di dalam file config/app.php. Buka file tersebut dan tambahkan baris berikut di dalam array aliases:
+4. Tambahkan konfigurasi pada aliases di dalam file `config/app.php`. Buka file tersebut dan tambahkan baris berikut di dalam array `aliases`:
 
 ```php
 'Tebot' => \Explorin\Tebot\Facades\TebotFacade::class,

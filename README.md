@@ -81,10 +81,20 @@ $app->register(Explorin\Tebot\TebotServiceProvider::class);
 
 Setelah package terinstal dan konfigurasi (jika ada) diatur, Anda dapat mulai menggunakan fitur-fitur package ini dengan mudah di dalam aplikasi Laravel Anda.
 
-Contoh penggunaan:
-
+Import package
 ```php
-    Tebot::alert('hai')
+    use Explorin\Tebot\Service\Tebot; 
+```
+
+Contoh penggunaan:
+```php    
+    Tebot::alert('Hai, ini adalah pesan alert dari Tebot!');
+    Tebot::info('Ini adalah pesan info dari Tebot!');
+    Tebot::warning('Ini adalah pesan warning dari Tebot!');
+    Tebot::error('Ini adalah pesan error dari Tebot!', ['errorCode' => 123]);
+
+    // Optional
+    Tebot::alert('Hai, ini adalah pesan alert dari Tebot!')->status(400);
 ```
 
 ## Kontribusi

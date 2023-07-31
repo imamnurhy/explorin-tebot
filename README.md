@@ -38,6 +38,7 @@ TEBOT_URL=
 TEBOT_KEY=
 ```
 
+
 ## Instalasi Lumen
 
 Untuk menginstal package ini di lumen, Anda dapat mengikuti langkah-langkah berikut:

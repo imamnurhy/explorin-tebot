@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Http;
  */
 class Tebot
 {
+    private $channelConfig = 'default';
     private $status = Response::HTTP_OK;
     private $title = 'Alert';
     private $message;
@@ -68,11 +69,12 @@ class Tebot
      * @param  string  $message  The message to be sent as an alert.
      * @return self
      */
-    public static function warning(string $message): self
+    public static function warning(string $message, array $detail = []): self
     {
         $instance = new self();
         $instance->title = '⚠️';
         $instance->message = $message;
+        $instance->detail = $detail;
         return $instance;
     }
 
@@ -90,6 +92,17 @@ class Tebot
         $instance->message = $message;
         $instance->detail = $detail;
         return $instance;
+    }
+
+    /**
+     * Set the channel configuration for the Tebot instance and return the instance.
+     * @param  string  $channel  The name of the channel for which the configuration should be set.
+     * @return self
+     */
+    public function channel(string $channel): self
+    {
+        $this->channelConfig = $channel;
+        return $this;
     }
 
     /**
@@ -117,10 +130,12 @@ class Tebot
             'datetime' => Carbon::now()
         ];
 
-        $data['title'] = $this->title . ' ' . config('tebot.name');
+        $config = config("tebot.$this->channelConfig");
+
+        $data['title'] = $this->title . ' ' . $config['name'];
 
         if (!empty($this->detail)) $data['detail'] = json_encode($this->detail);
 
-        Http::withHeaders(['x-api-key' => config('tebot.key')])->post(config('tebot.url') . '/api/message', $data);
+        Http::withHeaders(['x-api-key' => $config['key']])->post($config['url'] . '/api/message', $data);
     }
 }

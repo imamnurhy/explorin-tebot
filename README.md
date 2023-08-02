@@ -53,9 +53,11 @@ composer require explorin/tebot
 3.Buat buat file config/tebot.php di root project anda
 ```php
 return [
-    'name' => env('TEBOT_NAME', 'TEBOT'),
-    'url' => env('TEBOT_URL', 'localhost'),
-    'key' => env('TEBOT_KEY', null),
+    'default' => [
+        'name' => env('TEBOT_NAME', 'TEBOT'),
+        'url' => env('TEBOT_URL', 'localhost'),
+        'key' => env('TEBOT_KEY', null),
+    ]
 ];
 ```
 
@@ -88,14 +90,12 @@ Import package
 ```
 
 Contoh penggunaan:
-```php    
+```php
+    // Default
     Tebot::alert('Hai, ini adalah pesan alert dari Tebot!');
-    Tebot::info('Ini adalah pesan info dari Tebot!');
-    Tebot::warning('Ini adalah pesan warning dari Tebot!');
-    Tebot::error('Ini adalah pesan error dari Tebot!', ['errorCode' => 123]);
 
-    // Optional
-    Tebot::alert('Hai, ini adalah pesan alert dari Tebot!')->status(400);
+    // Menggunakan channel
+    Tebot::alert('Hai')->channel('nama_channel');
 ```
 
 ## Kontribusi

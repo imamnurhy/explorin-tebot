@@ -99,6 +99,33 @@ Contoh penggunaan:
     Tebot::alert('Hai')->channel('nama_channel');
 ```
 
+Untuk menggunakan lebih dari satu channel tambahkan configurasi pada tebot.php seperti berikut
+```php
+return [
+    'default' => [
+        'name' => env('TEBOT_NAME', 'TEBOT'),
+        'url' => env('TEBOT_URL', 'localhost'),
+        'key' => env('TEBOT_KEY', null),
+    ],
+    'example' => [
+         'name' => env('TEBOT_NAME2', 'TEBOT'),
+        'url' => env('TEBOT_URL2', 'localhost'),
+        'key' => env('TEBOT_KEY2', null),
+    ]
+];
+```
+
+Dan untuk cara penggunaan nya lihat contoh berikut
+```php
+    // Contoh menggunakan channel default
+    Tebot::alert('Hai, ini adalah pesan alert dari Tebot!');
+
+    // Contoh penggunaan channel example
+    Tebot::alert('Hai')->channel('example');
+```
+
+Dengan catatan `TEBOT_KEY` nya harus berbeda
+
 ## Kontribusi
 
 Jika Anda menemukan masalah atau ingin berkontribusi pada pengembangan package ini, Anda dapat membuka _issue_ atau mengirim _pull request_ melalui GitHub repository kami.

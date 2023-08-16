@@ -25,10 +25,11 @@ Explorin\Tebot\TebotServiceProvider::class,
 'Tebot' => \Explorin\Tebot\Facades\TebotFacade::class,
 ```
 
-5.Publis file konfigurasi dengan menjalankan perintah:
+5.Publish file konfigurasi dengan menjalankan perintah:
 ```bash
-php artisan vendor:publish --provider="Explorin\Tebot\TebotServiceProvider::class" --tag=config
+php artisan vendor:publish 
 ```
+Setelah itu akan muncul pilihan vendor lalu pilih `Explorin\Tebot\TebotServiceProvider`
 
 6.Perbaharui environment
    
@@ -86,7 +87,7 @@ Setelah package terinstal dan konfigurasi (jika ada) diatur, Anda dapat mulai me
 
 Import package
 ```php
-    use Explorin\Tebot\Service\Tebot; 
+    use Explorin\Tebot\Services\Tebot; 
 ```
 
 Contoh penggunaan:

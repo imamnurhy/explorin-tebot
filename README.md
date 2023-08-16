@@ -107,7 +107,7 @@ return [
         'key' => env('TEBOT_KEY', null),
     ],
     'example' => [
-         'name' => env('TEBOT_NAME2', 'TEBOT'),
+        'name' => env('TEBOT_NAME2', 'TEBOT'),
         'url' => env('TEBOT_URL2', 'localhost'),
         'key' => env('TEBOT_KEY2', null),
     ]

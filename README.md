@@ -25,11 +25,10 @@ Explorin\Tebot\TebotServiceProvider::class,
 'Tebot' => \Explorin\Tebot\Facades\TebotFacade::class,
 ```
 
-5.Publish file konfigurasi dengan menjalankan perintah:
+5.Publish vendor dengan menjalankan perintah:
 ```bash
-php artisan vendor:publish 
+php artisan vendor:publish --provider="Explorin\Tebot\TebotServiceProvider"
 ```
-Setelah itu akan muncul pilihan vendor lalu pilih `Explorin\Tebot\TebotServiceProvider`
 
 6.Perbaharui environment
    

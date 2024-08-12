@@ -138,4 +138,14 @@ class Tebot
 
         Http::withHeaders(['x-api-key' => $config['key']])->post($config['url'] . '/api/message', $data);
     }
+
+    /**
+     * Send the alert message with the specified status to the Tebot service Now
+     *
+     * @return void
+     */
+    public function sendNow(): void
+    {
+        $this->send();
+    }
 }

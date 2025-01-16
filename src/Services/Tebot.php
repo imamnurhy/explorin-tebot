@@ -127,7 +127,7 @@ class Tebot
         $data = [
             'code'     => $this->status,
             'message'  => $this->message,
-            'datetime' => Carbon::now()
+            'datetime' => Carbon::now()->toDateTimeString(),
         ];
 
         $config = config("tebot.$this->channelConfig");

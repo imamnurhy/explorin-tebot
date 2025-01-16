@@ -28,5 +28,7 @@ class TebotServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/config/tebot.php' =>  config_path('tebot.php'),
         ], 'config');
+
+        date_default_timezone_set(config('tebot.timezone', 'UTC'));
     }
 }

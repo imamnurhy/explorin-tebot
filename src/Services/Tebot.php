@@ -5,6 +5,7 @@ namespace Explorin\Tebot\Services;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Tebot - A class for sending alert messages via HTTP to a Tebot service.
@@ -134,9 +135,17 @@ class Tebot
 
         $data['title'] = $this->title . ' ' . $config['name'];
 
-        if (!empty($this->detail)) $data['detail'] = json_encode($this->detail);
+        if (!empty($this->detail)) {
+            $data['detail'] = json_encode($this->detail);
+        }
 
-        Http::withHeaders(['x-api-key' => $config['key']])->post($config['url'] . '/api/message', $data);
+        try {
+            Http::withHeaders([
+                'x-api-key' => $config['key']
+            ])->post($config['url'] . '/api/message', $data);
+        } catch (\Throwable $th) {
+            Log::error('Tebot Error: ' . $th->getMessage());
+        }
     }
 
     /**

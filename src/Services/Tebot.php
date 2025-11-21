@@ -139,6 +139,23 @@ class Tebot
             $data['detail'] = json_encode($this->detail);
         }
 
+        /**
+         * AUTO ANTI SPAM — rate limit based on message content
+         * 
+         * Example key:
+         * tebot_spam_error_default_500_846ad13ab...
+         */
+        $spamKey = 'tebot_spam_' . $this->title . md5($this->channelConfig . $this->status . $this->message . json_encode($this->detail));
+
+        //== If Tebot has sent the same message recently → skip sending
+        if (cache()->has($spamKey)) {
+            return; // BLOCK SPAM HERE
+        }
+
+        //== Only send once per 3 seconds
+        cache()->put($spamKey, true, now()->addSeconds(60));
+
+        //== Send the HTTP POST request to the Tebot service
         try {
             Http::withHeaders([
                 'x-api-key' => $config['key']

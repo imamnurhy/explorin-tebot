@@ -20,27 +20,24 @@ use Illuminate\Support\Facades\Log;
  */
 class Tebot
 {
-    private $channelConfig = 'default';
-    private $status = Response::HTTP_OK;
-    private $title = 'Alert';
-    private $message;
-    private $detail;
+    /* ========================
+     | State
+     |========================*/
 
-    /**
-     * Destructor to send the alert message automatically when the Tebot object is destroyed.
-     */
-    public function __destruct()
-    {
-        $this->send();
-    }
+    private string $channelConfig = 'default';
+    private int $status = Response::HTTP_OK;
+    private string $title = 'Alert';
+    private ?string $message = null;
+    private array $detail = [];
 
-    /**
-     * Set the alert message and return the Tebot instance.
-     *
-     * @param  string  $message  The message to be sent as an alert.
-     * @param  array  $detail  The detail to be sent as an alert.
-     * @return self
-     */
+    private ?string $customKey = null;
+    private ?string $customUrl = null;
+    private ?string $customName = null;
+
+    /* ========================
+     | Static Entry
+     |========================*/
+
     public static function alert(string $message, array $detail = []): self
     {
         $instance = new self();
@@ -50,12 +47,6 @@ class Tebot
         return $instance;
     }
 
-    /**
-     * Set the info message and return the Tebot instance.
-     *
-     * @param  string  $message  The message to be sent as an alert.
-     * @return self
-     */
     public static function info(string $message): self
     {
         $instance = new self();
@@ -64,12 +55,6 @@ class Tebot
         return $instance;
     }
 
-    /**
-     * Set the warning message and return the Tebot instance.
-     *
-     * @param  string  $message  The message to be sent as an alert.
-     * @return self
-     */
     public static function warning(string $message, array $detail = []): self
     {
         $instance = new self();
@@ -79,13 +64,6 @@ class Tebot
         return $instance;
     }
 
-    /**
-     * Set the error message and return the Tebot instance.
-     *
-     * @param  string  $message  The message to be sent as an alert.
-     * @param  array  $detail  The detail to be sent as an alert.
-     * @return self
-     */
     public static function error(string $message, array $detail = []): self
     {
         $instance = new self();
@@ -95,83 +73,148 @@ class Tebot
         return $instance;
     }
 
-    /**
-     * Set the channel configuration for the Tebot instance and return the instance.
-     * @param  string  $channel  The name of the channel for which the configuration should be set.
-     * @return self
-     */
+    /* ========================
+     | Builder
+     |========================*/
+
     public function channel(string $channel): self
     {
         $this->channelConfig = $channel;
         return $this;
     }
 
-    /**
-     * Set the status code for the alert message and return the Tebot instance.
-     *
-     * @param  int  $status  The HTTP status code to be included in the alert.
-     * @return self
-     */
     public function status(int $status): self
     {
         $this->status = $status;
         return $this;
     }
 
-    /**
-     * Send the alert message with the specified status to the Tebot service.
-     *
-     * @return void
-     */
-    private function send(): void
+    public function withKey(string $key): self
     {
-        $data = [
-            'code'     => $this->status,
-            'message'  => $this->message,
-            'datetime' => Carbon::now()->toDateTimeString(),
-        ];
+        $this->customKey = $key;
+        return $this;
+    }
 
-        $config = config("tebot.$this->channelConfig");
+    public function withUrl(string $url): self
+    {
+        $this->customUrl = $url;
+        return $this;
+    }
 
-        $data['title'] = $this->title . ' ' . $config['name'];
-
-        if (!empty($this->detail)) {
-            $data['detail'] = json_encode($this->detail);
-        }
-
-        /**
-         * AUTO ANTI SPAM — rate limit based on message content
-         * 
-         * Example key:
-         * tebot_spam_error_default_500_846ad13ab...
-         */
-        $spamKey = 'tebot_spam_' . $this->title . md5($this->channelConfig . $this->status . $this->message . json_encode($this->detail));
-
-        //== If Tebot has sent the same message recently → skip sending
-        if (cache()->has($spamKey)) {
-            return; // BLOCK SPAM HERE
-        }
-
-        //== Only send once per 3 seconds
-        cache()->put($spamKey, true, now()->addSeconds(60));
-
-        //== Send the HTTP POST request to the Tebot service
-        try {
-            Http::withHeaders([
-                'x-api-key' => $config['key']
-            ])->post($config['url'] . '/api/message', $data);
-        } catch (\Throwable $th) {
-            Log::error('Tebot Error: ' . $th->getMessage());
-        }
+    public function withName(string $name): self
+    {
+        $this->customName = $name;
+        return $this;
     }
 
     /**
-     * Send the alert message with the specified status to the Tebot service Now
-     *
-     * @return void
+     * Override semua config sekaligus (untuk DB multi-admin)
      */
-    public function sendNow(): void
+    public function using(string $url, string $key, ?string $name = null): self
     {
-        $this->send();
+        $this->customUrl = $url;
+        $this->customKey = $key;
+        $this->customName = $name;
+        return $this;
+    }
+
+    /* ========================
+     | Public Action
+     |========================*/
+
+    public function send(): bool
+    {
+        return $this->dispatch();
+    }
+
+    /* ========================
+     | Internal Dispatcher
+     |========================*/
+
+    private function dispatch(): bool
+    {
+        $this->validate();
+
+        $config = config("tebot.{$this->channelConfig}");
+
+        $url  = $this->customUrl  ?? $config['url']  ?? null;
+        $key  = $this->customKey  ?? $config['key']  ?? null;
+        $name = $this->customName ?? $config['name'] ?? '';
+
+        if (empty($url) || empty($key)) {
+            throw new \InvalidArgumentException(
+                "Tebot URL or Key not configured"
+            );
+        }
+
+        $payload = [
+            'code'     => $this->status,
+            'message'  => $this->message,
+            'datetime' => Carbon::now()->toDateTimeString(),
+            'title'    => $this->title . ' ' . $name,
+        ];
+
+        if (!empty($this->detail)) {
+            $payload['detail'] = json_encode($this->detail);
+        }
+
+        /**
+         * Atomic Anti-Spam (race-condition safe)
+         */
+        $spamKey = 'tebot_spam_' . md5(
+            $this->channelConfig .
+                $this->status .
+                $this->message .
+                json_encode($this->detail)
+        );
+
+        // Set cache untuk mencegah spam yang sama dalam 60 detik
+        if (!cache()->add($spamKey, true, now()->addSeconds(60))) {
+            return false;
+        }
+
+        try { // Kirim request ke Tebot
+            $response = Http::timeout(5)
+                ->withHeaders(['x-api-key' => $key])
+                ->post(rtrim($url, '/') . '/api/message', $payload);
+
+            if (!$response->successful()) {
+
+                Log::channel('tebot')->warning('Tebot HTTP Failed', [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                ]);
+
+                throw new \RuntimeException(
+                    'Tebot HTTP Failed: ' . $response->body(),
+                    $response->status()
+                );
+            }
+
+            Log::channel('tebot')->info('Tebot sent', [
+                'channel' => $this->channelConfig,
+                'code'    => $this->status,
+            ]);
+
+            return true;
+        } catch (\Throwable $e) {
+
+            Log::channel('tebot')->error('Tebot Exception', [
+                'error' => $e->getMessage()
+            ]);
+
+            throw $e; // penting supaya queue bisa retry
+        }
+    }
+
+    /* ========================
+     | Validation
+     |========================*/
+
+    private function validate(): void
+    {
+        if (empty($this->message)) {
+            throw new \InvalidArgumentException('Tebot message is required');
+        }
     }
 }

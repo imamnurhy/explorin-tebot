@@ -2,6 +2,7 @@
 
 namespace Explorin\Tebot;
 
+use Explorin\Tebot\Services\Tebot;
 use Illuminate\Support\ServiceProvider;
 
 class TebotServiceProvider extends ServiceProvider

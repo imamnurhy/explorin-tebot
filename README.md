@@ -6,20 +6,22 @@ Tebot adalah sebuah package Laravel yang berfungsi untuk mengirim notifikasi log
 
 Untuk menginstal package ini, Anda dapat mengikuti langkah-langkah berikut:
 
-1.Buka terminal atau command prompt dan arahkan ke direktori proyek Laravel Anda.
-2.Jalankan perintah berikut untuk menginstal package melalui Composer:
+1. Buka terminal atau command prompt dan arahkan ke direktori proyek Laravel Anda.
+2. Jalankan perintah berikut untuk menginstal package melalui Composer:
 
 ```bash
-composer require explorin/tebot
+composer require explorin/laravel-tebot
 ```
 
-3.Setelah package terinstal, tambahkan service provider ke dalam file `config/app.php`. Buka file tersebut dan tambahkan baris berikut di dalam array `providers`:
+> **Catatan (Laravel 8+)**: Package ini sudah mendukung **Auto-Discovery**. Langkah 3 dan 4 di bawah bersifat opsional untuk versi Laravel modern.
+
+3. *(Opsional jika Auto-Discovery aktif)* Setelah package terinstal, tambahkan service provider ke dalam file `config/app.php` di dalam array `providers`:
 
 ```php
 Explorin\Tebot\TebotServiceProvider::class,
 ```
 
-4.Tambahkan konfigurasi pada aliases di dalam file `config/app.php`. Buka file tersebut dan tambahkan baris berikut di dalam array `aliases`:
+4. *(Opsional jika Auto-Discovery aktif)* Tambahkan konfigurasi pada aliases di dalam file `config/app.php` di dalam array `aliases`:
 
 ```php
 'Tebot' => \Explorin\Tebot\Facades\TebotFacade::class,

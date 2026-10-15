@@ -1,5 +1,5 @@
 {
-    "name": "explorin/tebot",
+    "name": "explorin/laravel-tebot",
     "description": "Bot for notification log",
     "type": "library",
     "license": "MIT",
@@ -11,16 +11,12 @@
             "src/helpers/helpers.php"
         ]
     },
-    "authors": [
-        {
-            "name": "Imam Nurhy",
-            "email": "imamnurhy@gmail.com"
-        }
-    ],
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.2.5|^8.0",
-        "guzzlehttp/guzzle": "^6.3.1|^7.0.1"
+        "php": "^8.0|^8.1|^8.2|^8.3",
+        "illuminate/support": "^8.0|^9.0|^10.0|^11.0",
+        "illuminate/http": "^8.0|^9.0|^10.0|^11.0",
+        "guzzlehttp/guzzle": "^7.0.1"
     },
     "extra": {
         "laravel": {
@@ -28,7 +24,7 @@
                 "Explorin\\Tebot\\TebotServiceProvider"
             ],
             "aliases": {
-                "Tebot": "Explorin\\Tebot\\Facades\\Tebot"
+                "Tebot": "Explorin\\Tebot\\Facades\\TebotFacade"
             }
         }
     }
